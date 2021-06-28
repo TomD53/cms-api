@@ -16,10 +16,16 @@ class PlayerBase(BaseModel):
 class PlayerCreate(PlayerBase):
     pass
 
+class PlayerUpdate(BaseModel):
+    mc_username: str = None
+    mc_uuid: str = None
+    teams: List[int] = None
+    badges: List[int] = None
+
 
 class Player(PlayerBase):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
-    mc_uuid: str
+    mc_username: str
     teams: List[int] = []
     badges: List[int] = []
     
