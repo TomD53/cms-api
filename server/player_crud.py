@@ -119,6 +119,8 @@ async def delete_player(player_id: str):
 async def update_player(player_id: str, player: player_model.PlayerUpdate):
     """
     Provide the player ID and then any fields you want to update
+
+    If you provide both a `mc_username` and `mc_uuid` then the `mc_username` will be updated according to the new UUID
     """
 
     player = {k: v for k, v in player.dict().items() if v is not None}
