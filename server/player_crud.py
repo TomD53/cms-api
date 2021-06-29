@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.responses import JSONResponse, Response
 from typing import Optional, List
 from fastapi.encoders import jsonable_encoder
@@ -6,7 +6,8 @@ from mojang import MojangAPI
 
 from app import db
 
-from models import player_model, misc_models, team_model
+from models import player_model, misc_models, team_model, user_model
+from .oauth2 import get_current_user
 
 router = APIRouter(
     prefix="/players",
@@ -37,7 +38,10 @@ async def get_players():
         }
     }
 )
-async def add_player(player: player_model.PlayerCreate):
+async def add_player(
+    player: player_model.PlayerCreate, 
+    current_user: user_model.User = Depends(get_current_user)
+):
     existing_player = await db["players"].find_one({"mc_username": player.mc_username})
     if existing_player:
         return JSONResponse(
@@ -104,7 +108,7 @@ async def get_player_by_username(mc_username: str):
         }
     }
 )
-async def delete_player(player_id: str):
+async def delete_player(player_id: str, current_user: user_model.User = Depends(get_current_user)):
     delete_result = await db["players"].delete_one({"_id": player_id})
 
     if delete_result.deleted_count == 1:
@@ -122,7 +126,11 @@ async def delete_player(player_id: str):
         404: {"model": misc_models.Message, "description": "Raised if a new IGN already exists"},
     }
 )
-async def update_player(player_id: str, player: player_model.PlayerUpdate):
+async def update_player(
+    player_id: str, 
+    player: player_model.PlayerUpdate,
+    current_user: user_model.User = Depends(get_current_user)
+):
     """
     Provide the player ID and then any fields you want to update
 

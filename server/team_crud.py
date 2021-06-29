@@ -1,11 +1,12 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.responses import JSONResponse, Response
 from typing import Optional, List
 from fastapi.encoders import jsonable_encoder
 
 from app import db
 
-from models import team_model, misc_models, player_model
+from models import team_model, misc_models, player_model, user_model
+from .oauth2 import get_current_user
 
 router = APIRouter(
     prefix="/teams",
@@ -30,7 +31,10 @@ async def get_teams():
         }
     }
 )
-async def add_team(team: team_model.TeamCreate):
+async def add_team(
+    team: team_model.TeamCreate, 
+    current_user: user_model.User = Depends(get_current_user)
+):
     existing_team = await db["teams"].find_one({"$or": [
         {"name": team.name},
         {"alias": team.alias}
@@ -95,7 +99,7 @@ async def get_team_by_alias(team_alias: str):
         }
     }
 )
-async def delete_team(team_id: str):
+async def delete_team(team_id: str, current_user: user_model.User = Depends(get_current_user)):
     delete_result = await db["teams"].delete_one({"_id": team_id})
 
     if delete_result.deleted_count == 1:
@@ -109,7 +113,10 @@ async def delete_team(team_id: str):
     response_description="Update a team",
     response_model=team_model.Team
 )
-async def update_team(team_id: str, team: team_model.TeamUpdate):
+async def update_team(
+    team_id: str, team: team_model.TeamUpdate, 
+    current_user: user_model.User = Depends(get_current_user)
+):
     team = {k: v for k, v in team.dict().items() if v is not None}
 
     if len(team) >= 1:
