@@ -8,7 +8,8 @@ from app import db
 from models import team_model, misc_models, player_model
 
 router = APIRouter(
-    prefix="/teams"
+    prefix="/teams",
+    tags=["teams"]
 )
 
 @router.get("/", response_description="List all teams", response_model=List[team_model.Team])

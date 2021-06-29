@@ -25,5 +25,6 @@ class PlayerUpdate(BaseModel):
 class Player(PlayerBase):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     mc_username: str
+    mc_uuid: str
     badges: List[str] = []
     

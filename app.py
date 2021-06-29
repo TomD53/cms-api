@@ -1,7 +1,19 @@
 from fastapi import FastAPI
 import motor.motor_asyncio
+import yaml
 
-app = FastAPI()
+with open('config.yaml') as f:
+    config = yaml.load(f, Loader=yaml.FullLoader)
+
+with open('tags.yaml') as f:
+    tags = yaml.load(f, Loader=yaml.FullLoader)
+
+app = FastAPI(
+    title="CMS API",
+    description="Web service connecting all CMS related apps",
+    version="0.1.0",
+    openapi_tags=tags["tags"]
+)
 client = motor.motor_asyncio.AsyncIOMotorClient("mongodb://localhost:27017")
 db = client.cms_api
 

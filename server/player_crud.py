@@ -9,7 +9,8 @@ from app import db
 from models import player_model, misc_models, team_model
 
 router = APIRouter(
-    prefix="/players"
+    prefix="/players",
+    tags=["players"]
 )
 
 

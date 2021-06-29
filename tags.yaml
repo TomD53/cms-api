@@ -1,0 +1,47 @@
+tags:
+  - name: "players"
+    description: >
+      Operations regarding players. 
+      
+      
+      No authentication is done here, just storing player IGNs, UUIDs and badges.
+  - name: "teams"
+    description: "Operations regarding teams"
+  - name: "oauth2"
+    description: >
+      Operations regarding users and authentication
+
+
+      In order to access protected resources, you must have an access token
+
+      
+      To gain an access token, you must first be registered as a user. Only admins
+      are capable of creating new users, so you need to ask an admin.
+
+
+      Once you are registered as a user, you will have a username and a password. You
+      can use this username and password to fetch a token which you can use to authorise
+      future requests.
+
+
+      To fetch an access token, make a `POST` request to the route `/oauth2/token`. 
+      The request body should be of content-type `application/x-www-form-urlencoded` and 
+      should contain a `username` and a `password`
+
+
+      If your credentials are correct, the server will respond with a `Token` object:
+
+      ```
+
+      {
+        "access_token": YOUR_ACCESS_TOKEN, 
+        "token_type": "bearer"
+      }
+
+      ```
+
+      Once you have obtained this token, you can authenticate requests with it by adding 
+      the `Authorization` header. The content of this header should be as follows:
+      ```
+      Bearer YOUR_TOKEN_HERE
+      ```
