@@ -19,13 +19,11 @@ class PlayerCreate(PlayerBase):
 class PlayerUpdate(BaseModel):
     mc_username: str = None
     mc_uuid: str = None
-    teams: List[int] = None
-    badges: List[int] = None
+    badges: List[str] = None
 
 
 class Player(PlayerBase):
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     mc_username: str
-    teams: List[int] = []
-    badges: List[int] = []
+    badges: List[str] = []
     

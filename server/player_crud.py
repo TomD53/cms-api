@@ -6,7 +6,7 @@ from mojang import MojangAPI
 
 from app import db
 
-from models import player_model, misc_models
+from models import player_model, misc_models, team_model
 
 router = APIRouter(
     prefix="/players"
@@ -96,7 +96,12 @@ async def get_player_by_username(mc_username: str):
 @router.delete(
     "/{player_id}",
     response_description="Delete a player by their ID",
-    response_model=player_model.Player
+    responses={
+        404: {
+            "model": misc_models.Message,
+            "description": "Raised when the specified player cannot be found"
+        }
+    }
 )
 async def delete_player(player_id: str):
     delete_result = await db["players"].delete_one({"_id": player_id})
@@ -176,3 +181,23 @@ async def update_player(player_id: str, player: player_model.PlayerUpdate):
         return existing_player
 
     return JSONResponse(status_code=404, content={"message": f"Player with ID {player_id} not found"})
+
+
+@router.get(
+    "/id/{player_id}/teams",
+    response_description="Get a the teams which a player is on",
+    response_model=List[team_model.Team],
+    responses={
+        404: {
+            "model": misc_models.Message,
+            "description": "Raised when the player cannot be found"
+        }
+    }
+)
+async def get_player_teams(player_id: str):
+    player = await db["players"].find_one({"_id": player_id})
+    if not player:
+        return JSONResponse(status_code=404, content={"message": f"Could not find player with ID {player_id}"})
+    
+    teams = await db["teams"].find({"players": player_id}).to_list(None)
+    return teams

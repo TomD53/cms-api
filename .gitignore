@@ -1,6 +1,7 @@
 create_requirements.bat
 mongodb
 mongodb.bat
+config.yaml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

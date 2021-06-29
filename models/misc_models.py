@@ -1,5 +1,6 @@
 from bson import ObjectId
 from pydantic import BaseModel
+from typing import Optional
 
 
 class PyObjectId(ObjectId):
@@ -20,3 +21,12 @@ class PyObjectId(ObjectId):
 
 class Message(BaseModel):
     message: str
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: Optional[str] = None
