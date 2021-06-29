@@ -14,7 +14,7 @@ app = FastAPI(
     version="0.1.0",
     openapi_tags=tags["tags"]
 )
-client = motor.motor_asyncio.AsyncIOMotorClient("mongodb://localhost:27017")
+client = motor.motor_asyncio.AsyncIOMotorClient(config["db_url"])
 db = client.cms_api
 
 import server.player_crud
